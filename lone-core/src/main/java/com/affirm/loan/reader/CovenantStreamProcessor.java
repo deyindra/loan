@@ -4,6 +4,7 @@ import com.affirm.loan.converter.CovenantCSVConverter;
 import com.affirm.loan.converter.GenericCSVConverter;
 import com.affirm.loan.db.BankStorage;
 import com.affirm.loan.db.FacilityStorage;
+import com.affirm.loan.ignore.IgnoreCoverage;
 import com.affirm.loan.model.Covenant;
 
 import java.util.Objects;
@@ -61,14 +62,12 @@ public class CovenantStreamProcessor extends AbstractStreamProcessor<CovenantStr
             return maxDefaultLikelyHood;
         }
 
-        public Covenant.CovenantType getType() {
-            return type;
-        }
 
         public Optional<String> getBannedState() {
             return bannedState;
         }
 
+        @IgnoreCoverage
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -80,11 +79,13 @@ public class CovenantStreamProcessor extends AbstractStreamProcessor<CovenantStr
                     Objects.equals(bannedState, that.bannedState);
         }
 
+        @IgnoreCoverage
         @Override
         public int hashCode() {
             return Objects.hash(facilityId, type, maxDefaultLikelyHood, bannedState);
         }
 
+        @IgnoreCoverage
         @Override
         public String toString() {
             return "CovenantPK{" +

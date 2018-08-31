@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Stream;
 
-import static com.affirm.loan.db.lock.DBLock.*;
 
 /**
  * In memory structure for storing {@link Facility} objects
@@ -34,7 +33,7 @@ public class FacilityStorage extends DBStorage<Integer, Facility> {
     }
 
     @Override
-    public void process(Path file) {
+    public synchronized void process(Path file) {
         if (map == null) {
             map = new ConcurrentHashMap<>();
         }
@@ -44,8 +43,6 @@ public class FacilityStorage extends DBStorage<Integer, Facility> {
         if(groupByBank == null){
             groupByBank = new ConcurrentHashMap<>();
         }
-
-        WRITE_LOCK.lock();
         log.info("Processing File " + file.toString());
         try (Stream<String> s = Files.lines(file).skip(1)) {
             streamProcessor.mapping(s, map);
@@ -58,45 +55,28 @@ public class FacilityStorage extends DBStorage<Integer, Facility> {
             }
         }catch (IOException ex){
             throw new DBStorageException("Error", ex);
-        }finally {
-            WRITE_LOCK.unlock();
         }
     }
 
 
     @Override
-    public Map<Integer, Facility> getMap() {
-        READ_LOCK.lock();
-        try {
-            return super.getMap();
-        }finally {
-            READ_LOCK.unlock();
-        }
+    public synchronized Map<Integer, Facility> getMap() {
+        return super.getMap();
     }
 
     /**
      *
      * @return Concurrent Sorted view of {@link Facility}
      */
-    public ConcurrentSkipListSet<Facility> getSortedFacilityMap() {
-        READ_LOCK.lock();
-        try {
-            return sortedFacilitySet;
-        }finally {
-            READ_LOCK.unlock();
-        }
+    public synchronized ConcurrentSkipListSet<Facility> getSortedFacilityMap() {
+        return sortedFacilitySet;
     }
 
     /**
      *
      * @return sorted Set of Facility group by bank
      */
-    public ConcurrentMap<Integer, ConcurrentSkipListSet<Facility>> getGroupByBank() {
-        READ_LOCK.lock();
-        try {
-            return groupByBank;
-        }finally {
-            READ_LOCK.unlock();
-        }
+    public synchronized ConcurrentMap<Integer, ConcurrentSkipListSet<Facility>> getGroupByBank() {
+        return groupByBank;
     }
 }
