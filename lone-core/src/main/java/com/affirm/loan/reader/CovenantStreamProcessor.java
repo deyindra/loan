@@ -36,6 +36,9 @@ public class CovenantStreamProcessor extends AbstractStreamProcessor<CovenantStr
     }
 
 
+    /**
+     * Define Primary Key
+     */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class CovenantPK{
         int facilityId;
@@ -48,6 +51,22 @@ public class CovenantStreamProcessor extends AbstractStreamProcessor<CovenantStr
             this.type = type;
             this.maxDefaultLikelyHood = maxDefaultLikelyHood;
             this.bannedState = bannedState;
+        }
+
+        public int getFacilityId() {
+            return facilityId;
+        }
+
+        public OptionalDouble getMaxDefaultLikelyHood() {
+            return maxDefaultLikelyHood;
+        }
+
+        public Covenant.CovenantType getType() {
+            return type;
+        }
+
+        public Optional<String> getBannedState() {
+            return bannedState;
         }
 
         @Override
