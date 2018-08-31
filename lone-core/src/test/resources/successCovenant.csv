@@ -1,0 +1,8 @@
+facility_id,max_default_likelihood,bank_id,banned_state
+2,0.09,1,MT
+2,0.06,1,MT
+,0.06,1
+,0.06,1,MT
+1,0.06,2,VT
+,0.07,2
+1,,2,CA
